@@ -1,0 +1,20 @@
+Coluna,Tipo de Dado,Descrição
+person_age,INT,Idade do cliente
+person_income,FLOAT,Renda anual do cliente
+person_home_ownership,STRING,Situação da moradia do cliente
+person_emp_length,FLOAT,Tempo de emprego em anos
+loan_intent,STRING,Finalidade do empréstimo
+loan_grade,STRING,Classificação de risco do empréstimo
+loan_amnt,FLOAT,Valor do empréstimo
+loan_int_rate,FLOAT,Taxa de juros aplicada ao empréstimo (%)
+loan_percent_income,FLOAT,Percentual da renda comprometida com o empréstimo
+loan_status,INT,"Status do empréstimo (0=Adimplente, 1=Inadimplente)"
+cb_person_default_on_file,STRING,Histórico anterior de inadimplência (Y/N)
+cb_person_cred_hist_length,INT,Tempo do histórico de crédito (anos)
+date,STRING,Data de referência no formato YYYYMM
+year,INT,Ano da operação
+month,INT,Mês da operação
+ipca,FLOAT,IPCA mensal (%)
+selic_media,FLOAT,Taxa SELIC média mensal
+mes_num,INT,Número do mês (1 a 12)
+data,DATE,Data de referência no formato YYYY-MM-01
