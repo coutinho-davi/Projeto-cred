@@ -1,0 +1,10 @@
+#Rodar o comando pip install -r requirements.txt para instalar as dependências do projeto
+
+pandas
+numpy
+scikit-learn
+matplotlib
+joblib
+fastapi
+uvicorn
+pydantic

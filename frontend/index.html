@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise de Crédito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f0f11;
+      --surface: #17171b;
+      --border:  #2e2e38;
+      --text:    #e2e2e8;
+      --muted:   #5a5a66;
+      --accent:  #ffe600;
+      --mono: 'DM Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 80px;
+    }
+
+    header { width: 100%; max-width: 660px; margin-bottom: 36px; }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 28px 32px;
+      width: 100%;
+      max-width: 660px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    input, select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 9px 11px;
+      width: 100%;
+      outline: none;
+      appearance: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, select:focus { border-color: var(--accent); }
+    input::placeholder { color: var(--muted); }
+    select option { background: #1c1c22; }
+
+    input.input-erro { border-color: #f07070; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 26px 0; }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: #0f0f11;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    button:hover { opacity: 0.88; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .aviso-campo {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: #f07070;
+      margin-top: 3px;
+      display: none;
+    }
+
+    #resultado {
+      display: none;
+      margin-top: 20px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      background: var(--surface);
+      width: 100%;
+      max-width: 660px;
+    }
+
+    .resultado-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+
+    .resultado-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .resultado-item .r-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .resultado-item .r-value {
+      font-family: var(--mono);
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    #risco-valor { color: var(--text); }
+    #grade-valor { color: var(--accent); }
+
+    #erro {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border: 1px solid #662020;
+      background: #1a0808;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #f07070;
+      width: 100%;
+      max-width: 660px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="tag">Credit Risk</div>
+    <h1>Análise de Probabilidade de Inadimplência</h1>
+  </header>
+
+  <div class="card">
+    <div class="section-label">Perfil do solicitante</div>
+    <div class="grid">
+
+      <div class="field">
+        <label>Idade</label>
+        <input type="number" id="person_age" placeholder="ex: 35" min="18" max="80"
+          oninput="validarIdade()">
+        <span class="aviso-campo" id="aviso-idade"></span>
+      </div>
+
+      <div class="field">
+        <label>Renda anual (R$)</label>
+        <input type="number" id="person_income" placeholder="ex: 60000" min="0">
+      </div>
+
+      <div class="field">
+        <label>Tempo de emprego (anos)</label>
+        <input type="number" id="person_emp_length" placeholder="ex: 5" min="0" step="0.5">
+      </div>
+
+      <div class="field">
+        <label>Histórico de crédito (anos)</label>
+        <input type="number" id="cb_person_cred_hist_length" placeholder="ex: 8" min="0">
+      </div>
+
+      <div class="field full">
+        <label>Registro de dívida em aberto</label>
+        <select id="cb_person_default_on_file">
+          <option value="0">0 — Não possui registro de dívida em aberto</option>
+          <option value="1">1 — Possui registro de dívida em aberto</option>
+        </select>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <div class="section-label">Características do empréstimo</div>
+    <div class="grid">
+
+      <div class="field">
+        <label>Valor solicitado (R$)</label>
+        <input type="number" id="loan_amnt" placeholder="ex: 15000" min="0">
+      </div>
+
+      <div class="field">
+        <label>Taxa de juros (%)</label>
+        <input type="number" id="loan_int_rate" placeholder="ex: 12.5" min="0" step="0.01">
+      </div>
+
+      <div class="field full">
+        <label>Comprometimento de renda (%)</label>
+        <input type="number" id="loan_percent_income" placeholder="ex: 25.5" min="0" step="0.01">
+      </div>
+
+    </div>
+
+    <hr>
+
+    <button id="btn" onclick="calcular()">Calcular risco</button>
+  </div>
+
+  <div id="erro"></div>
+
+  <div id="resultado">
+    <div class="section-label">Resultado da análise</div>
+    <div class="resultado-grid">
+      <div class="resultado-item">
+        <div class="r-label">Probabilidade de inadimplência</div>
+        <div class="r-value" id="risco-valor">—</div>
+      </div>
+      <div class="resultado-item">
+        <div class="r-label">Loan grade</div>
+        <div class="r-value" id="grade-valor">—</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8000/predict";
+
+    function getFloat(id) {
+      const v = document.getElementById(id).value.trim();
+      return v === "" ? null : parseFloat(v);
+    }
+
+    function getInt(id) {
+      return parseInt(document.getElementById(id).value);
+    }
+
+    function validarIdade() {
+      const input  = document.getElementById("person_age");
+      const aviso  = document.getElementById("aviso-idade");
+      const idade  = parseFloat(input.value);
+
+      if (input.value === "") {
+        input.classList.remove("input-erro");
+        aviso.style.display = "none";
+        return true;
+      }
+
+      if (idade < 18) {
+        input.classList.add("input-erro");
+        aviso.textContent   = "Idade mínima: 18 anos.";
+        aviso.style.display = "block";
+        return false;
+      }
+
+      if (idade > 80) {
+        input.classList.add("input-erro");
+        aviso.textContent   = "Idade máxima: 80 anos.";
+        aviso.style.display = "block";
+        return false;
+      }
+
+      input.classList.remove("input-erro");
+      aviso.style.display = "none";
+      return true;
+    }
+
+    async function calcular() {
+      const btn         = document.getElementById("btn");
+      const erroEl      = document.getElementById("erro");
+      const resultadoEl = document.getElementById("resultado");
+
+      erroEl.style.display      = "none";
+      resultadoEl.style.display = "none";
+
+      if (!validarIdade()) {
+        erroEl.textContent   = "Corrija a idade antes de continuar.";
+        erroEl.style.display = "block";
+        return;
+      }
+
+      const camposObrigatorios = [
+        "person_age", "person_income", "person_emp_length",
+        "loan_amnt", "loan_int_rate", "loan_percent_income",
+        "cb_person_cred_hist_length"
+      ];
+
+      for (const campo of camposObrigatorios) {
+        if (getFloat(campo) === null) {
+          erroEl.textContent   = "Preencha todos os campos antes de calcular.";
+          erroEl.style.display = "block";
+          return;
+        }
+      }
+
+      const percentInput = getFloat("loan_percent_income");
+      const proporcao    = percentInput / 100;
+
+      const payload = {
+        person_age:                 getFloat("person_age"),
+        person_income:              getFloat("person_income"),
+        person_emp_length:          getFloat("person_emp_length"),
+        loan_amnt:                  getFloat("loan_amnt"),
+        loan_int_rate:              getFloat("loan_int_rate"),
+        loan_percent_income:        proporcao,
+        cb_person_cred_hist_length: getFloat("cb_person_cred_hist_length"),
+        cb_person_default_on_file:  getInt("cb_person_default_on_file"),
+      };
+
+      btn.disabled    = true;
+      btn.textContent = "Calculando...";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || "Erro HTTP " + res.status);
+        }
+
+        const data = await res.json();
+
+        document.getElementById("risco-valor").textContent = data.risco + "%";
+        document.getElementById("grade-valor").textContent = data.loan_grade;
+        resultadoEl.style.display = "block";
+
+      } catch (err) {
+        erroEl.textContent   = "Erro: " + err.message;
+        erroEl.style.display = "block";
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = "Calcular risco";
+      }
+    }
+  </script>
+
+</body>
+</html>
