@@ -60,3 +60,5 @@ def predict(dados: DadosCredito):
        return {"risco": risco, "loan_grade": loan_grade}
    except Exception as e:
        raise HTTPException(status_code=500, detail=str(e))
+
+# rodar o comando uvicorn main:app --reload para iniciar o servidor
