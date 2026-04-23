@@ -1,8 +1,9 @@
 import joblib
 import numpy as np
 import streamlit as st
+import os
 
-modelo = joblib.load("Project_Credit/modelo_credito.pkl")
+modelo = joblib.load(os.path.join(os.path.dirname(__file__), "Project_Credit/modelo_credito.pkl"))
 
 st.set_page_config(page_title="Análise de Crédito", layout="centered")
 
