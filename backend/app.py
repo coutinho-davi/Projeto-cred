@@ -30,6 +30,7 @@ div[data-baseweb="select"] * {
     font-family: 'DM Mono', monospace !important;
     text-decoration: none !important;
     border: none !important;
+    color: #ffffff !important;
     outline: none !important;
     box-shadow: none !important;
 }
