@@ -59,7 +59,6 @@ div[data-baseweb="option"]:hover {
 label, .stNumberInput label, .stSelectbox label {
     font-family: 'DM Mono', monospace !important;
     font-size: 12px !important;
-    color: #888888 !important;
     letter-spacing: 0.04em !important;
 }
 
