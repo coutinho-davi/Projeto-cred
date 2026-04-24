@@ -180,7 +180,7 @@ Davi Fernandes Coutinho | João Vitor Rodrigues
 
 ---
 
-## Licença
+## Licença  
 
-Projeto de uso educacional e analítico.
+Projeto de uso educacional e analítico .
 Dados macroeconômicos provenientes do IBGE e do Banco Central do Brasil.
